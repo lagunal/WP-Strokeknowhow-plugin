@@ -1,0 +1,19 @@
+/* .zoom {
+    transition: transform .2s; 
+}
+
+.zoom:hover {
+    transform: scale(1.1); 
+} */
+
+.zoom {
+    color: blue,
+}
+
+.title {
+    background-color: Yellow;
+    color: black;
+    padding: 15px; 
+    font-weight: bold;
+
+}

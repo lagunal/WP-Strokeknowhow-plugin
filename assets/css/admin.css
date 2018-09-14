@@ -1,0 +1,11 @@
+.notice {
+    position: relative;
+    color: red;
+    top: 100px;
+  }
+  
+.notice_dismiss .dashicons {
+    position: absolute;
+    top: 100px;
+    right: 9px;
+}
