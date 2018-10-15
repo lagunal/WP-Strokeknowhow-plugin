@@ -22,29 +22,29 @@ class HelpNeededToolkit extends Component {
             restNonce: this.props.wpObject.api_nonce,
         });
        
-        this.getData();
-        // dataToolkit = []
-        // if (Object.keys(this.state.data).length === 0) {//if toolkit is new (no data from fetch)
-        // //dataToolkit = jsonData; //assign "empty" json to data for toolkit
-        //     this.setState({
-        //         data: jsonData,
-        //     });
-        // } 
     }
 
-    getData = () => {
-        this.fetchWP.get( 'helpNeeded/' + this.props.wpObject.userID )
-        .then(
-        (json) => this.setState({
-            data: json.value,
-        }),
-        (err) => console.log( 'error', err )
-        );
+    async componentDidMount() {
+        try {
+            const data = await this.fetchWP.get( 'helpNeeded/' + this.props.wpObject.userID );
+            const dataValue = data.value;
+            var dataToolkit = [];
+            if (dataValue === null) {//if toolkit is new (no data from fetch)
+               dataToolkit = jsonData; //assign "empty" json to data for toolkit
+            } else {
+              dataToolkit = dataValue; //assign existing data from toolkit
+            }
+            this.setState({ 
+              isLoading: false, 
+              data: dataToolkit,
+            });
+        } catch(error) {
+            console.log( 'error', error )
+        }
         
-    };
+    }
 
     updateSetting = () => {
-        console.log(this.state.data);
         let jsonData = JSON.stringify(this.state.data);
         this.fetchWP.post( 'helpNeeded/' + this.props.wpObject.userID, { data: jsonData } )
         .then(
@@ -80,7 +80,7 @@ class HelpNeededToolkit extends Component {
     
     handleInputChange(event) {
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const value = target.value;
         const name = target.name;
         var data = this.state.data;
        
@@ -98,6 +98,7 @@ class HelpNeededToolkit extends Component {
  
 
     render() {
+  
         return(
       
         <form id="printEmergency" onSubmit={this.handleSave} >
@@ -107,44 +108,16 @@ class HelpNeededToolkit extends Component {
             pluginUrl={this.props.wpObject.plugin_url}
             banner={'/assets/images/Banner_Help Needed Toolkit-june.jpg'} />
 
-                <div className="container-fluid border">
-            
-                    <div className="row " style={{backgroundColor: '#000099'}}> 
+            <div className="container-fluid border">
 
-                        <div className="col-4 p-2 text-white align-self-center text-center border">
-                            Help Needed
-                        </div>
-                        <div className="col p-2 text-white border text-center "> 
-                            Monday
-                        </div>
-                        <div className="col p-2 text-white border text-center">
-                            Tuesday
-                        </div>
-                        <div className="col p-2 text-white border text-center">
-                            Wednesday
-                        </div>
-                        <div className="col p-2 text-white border text-center">
-                            Thursday
-                        </div>
-                        <div className="col p-2 text-white border text-center">
-                            Friday
-                        </div>
-                        <div className="col p-2 text-white border text-center">
-                            Saturday
-                        </div> 
-                        <div className="col p-2 text-white border text-center">
-                            Sunday
-                        </div>
+                <RenderHelpers myDataProp = {this.state.data}
+                               updateStateProp = {this.handleInputChange}  
+                        />
 
-                    </div>
-
-                    <RenderHelpers myDataProp = {this.state.data}
-                                   updateStateProp = {this.handleInputChange}  />
-
-                </div>
+            </div>
 
             {this.state.notice && 
-            <div className="col-md-12" style={{color: 'red'}}>
+            <div className="col-md-12" style={{color: 'red', fontSize: 22}}>
                 {this.state.notice.message}
             </div>}
           

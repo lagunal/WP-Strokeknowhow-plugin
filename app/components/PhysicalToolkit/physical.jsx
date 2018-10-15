@@ -22,29 +22,29 @@ class PhysicalToolkit extends Component {
             restNonce: this.props.wpObject.api_nonce,
         });
        
-        this.getData();
-        // dataToolkit = []
-        // if (Object.keys(this.state.data).length === 0) {//if toolkit is new (no data from fetch)
-        // //dataToolkit = jsonData; //assign "empty" json to data for toolkit
-        //     this.setState({
-        //         data: jsonData,
-        //     });
-        // } 
     }
 
-    getData = () => {
-        this.fetchWP.get( 'physical/' + this.props.wpObject.userID )
-        .then(
-        (json) => this.setState({
-            data: json.value,
-        }),
-        (err) => console.log( 'error', err )
-        );
-        
-    };
+    async componentDidMount() {
+        try { 
+            const data = await this.fetchWP.get( 'physical/' + this.props.wpObject.userID );
+            const dataValue = data.value;
+            var dataToolkit = [];
+            if (dataValue === null) {//if toolkit is new (no data from fetch)
+               dataToolkit = jsonData; //assign "empty" json to data for toolkit
+            } else {
+              dataToolkit = dataValue; //assign existing data from toolkit
+            }
+            this.setState({ 
+              isLoading: false, 
+              data: dataToolkit,
+            });
+        } catch (error) {
+            console.log( 'error', error )
+        }
+ 
+    }
 
     updateSetting = () => {
-        console.log(this.state.data);
         let jsonData = JSON.stringify(this.state.data);
         this.fetchWP.post( 'physical/' + this.props.wpObject.userID, { data: jsonData } )
         .then(
@@ -115,7 +115,7 @@ class PhysicalToolkit extends Component {
                 </div>
 
             {this.state.notice && 
-            <div className="col-md-12" style={{color: 'red'}}>
+            <div className="col-md-12" style={{color: 'red', fontSize: 22}}>
                 {this.state.notice.message}
             </div>}
           

@@ -12,8 +12,7 @@ class Shortcode extends Component {
     super(props);
 
     this.state = {
-      toolkit: '',
-
+      toolkit: ''
     };
 
     this.handleCLickEmergency = this.handleCLickEmergency.bind(this);
